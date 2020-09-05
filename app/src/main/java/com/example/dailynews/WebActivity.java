@@ -51,6 +51,11 @@ public class WebActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //显示JavaScript页面
+
+
+
+
+
         NewsDetail.DataBean data = newsDetail.getData();
         newsBodyTitle.setText(data.getTitle());
         //System.out.println(data.getTitle());

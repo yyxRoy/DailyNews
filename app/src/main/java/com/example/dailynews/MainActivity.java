@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private List<String> list;
+    private BottomMenuView bottomMenuViewList;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,31 @@ public class MainActivity extends AppCompatActivity {
         tabLayout=findViewById(R.id.tabLayout);
         viewPager=findViewById(R.id.viewPager);
         list=new ArrayList<>();
+        bottomMenuViewList=(BottomMenuView)findViewById(R.id.bmv_list);
+        //设置bottom数据
+        bottomMenuViewList.setBottomItem(getData());
+        //监听点击事件
+        bottomMenuViewList.setBottomItemOnClickListener(new BottomMenuView.BottomItemOnClickListener() {
+            @Override
+            public void bottomItemOnClick(View view, int i, BottomItem item) {
+                Toast.makeText(getApplicationContext(),"点击了第"+i+"个",Toast.LENGTH_SHORT).show();
+            }
+        });
+        //默认选择第几个
+        bottomMenuViewList.setShowIndex(0);
+    }
+    /**
+     * 创建bottom数据
+     * @return
+     */
+    public List<BottomItem> getData(){
+        List<BottomItem> items = new ArrayList<>();
+        items.add(new BottomItem("新闻",R.mipmap.icon_function_tab));
+        items.add(new BottomItem("数据",R.mipmap.icon_home_tab));
+        items.add(new BottomItem("图谱",R.mipmap.icon_my_tab));
+        items.add(new BottomItem("聚类",R.mipmap.icon_home_tab));
+        items.add(new BottomItem("学者",R.mipmap.icon_my_tab));
+        return items;
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onStart(){
@@ -95,9 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        list.add("新闻");list.add("数据");list.add("图谱");list.add("聚类");
-        list.add("学者");
-        System.out.println("test");
+        list.add("news");list.add("paper");list.add("event");
         /* viewPager.setOffscreenPageLimit(1);*/
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //得到当前页的标题，也就是设置当前页面显示的标题是tabLayout对应标题

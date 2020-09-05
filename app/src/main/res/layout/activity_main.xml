@@ -11,6 +11,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_height="?attr/actionBarSize"
@@ -27,11 +28,19 @@
             app:tabSelectedTextColor="#FF0000"
             app:tabTextColor="#000000">
         </com.google.android.material.tabs.TabLayout>
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="490dp"
+            >
         </androidx.viewpager.widget.ViewPager>
+        <com.example.dailynews.BottomMenuView
+            android:id="@+id/bmv_list"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+        </com.example.dailynews.BottomMenuView>
+
     </LinearLayout>
     //从这里开始为DrawerLayout第二部分，第一部分里的内容显示在activity_main.xml的主界面上
     <com.google.android.material.navigation.NavigationView

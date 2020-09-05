@@ -19,8 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.dailynews.json.MyNewsBean;
-import com.example.dailynews.json.NewsBean;
-import com.example.dailynews.json.NewsDetail;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
@@ -38,7 +36,7 @@ public class MyNewsFragment extends Fragment {
     private FloatingActionButton fab;
     private ListView listView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<MyNewsBean.DatasBean> list;
+    private List<MyNewsBean.DataBean> list;
 
     private static final int UPNEWS_INSERT = 0;
     @SuppressLint("HandlerLeak")
@@ -48,7 +46,7 @@ public class MyNewsFragment extends Fragment {
             String uniquekey,title,date, category,author_name,url,thumbnail_pic_s,thumbnail_pic_s02,thumbnail_pic_s03;
             switch (msg.what){
                 case UPNEWS_INSERT:
-                    list = ((MyNewsBean) msg.obj).getDatas();
+                    list = ((MyNewsBean) msg.obj).getData();
                     MyNewsTabAdapter adapter = new MyNewsTabAdapter(getActivity(),list);
                     listView.setAdapter((ListAdapter) adapter);
                     adapter.notifyDataSetChanged();
@@ -79,7 +77,7 @@ public class MyNewsFragment extends Fragment {
         onAttach(getActivity());
         //获取传递的值
         Bundle bundle = getArguments();
-        final String data = bundle.getString("name","top");
+        final String data = bundle.getString("name","news");
         //置顶功能
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +143,7 @@ public class MyNewsFragment extends Fragment {
         @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,String> task = new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
-                //String path = "http://v.juhe.cn/toutiao/index?type="+data+"&key=075f1935eedad5e9a28d55dbac764a6c";
-                String path= "https://covid-dashboard.aminer.cn/api/dist/events.json";
+                String path= "https://covid-dashboard.aminer.cn/api/events/list?type="+data+"&page=1&size=20";
                 URL url = null;
                 try {
                     url = new URL(path);

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dailynews.json.MyNewsBean;
-import com.example.dailynews.json.NewsBean;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -18,12 +17,12 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import java.util.List;
 
 public class MyNewsTabAdapter extends BaseAdapter {
-    private List<MyNewsBean.DatasBean> list;
+    private List<MyNewsBean.DataBean> list;
     private Context context;
     private int IMAGE_01 =0;
     private int IMAGE_02 = 1;
     private int IMAGE_03 = 2;
-    public MyNewsTabAdapter(Context context,  List<MyNewsBean.DatasBean> list){
+    public MyNewsTabAdapter(Context context,  List<MyNewsBean.DataBean> list){
         this.context = context;
         this.list = list;
         //配置lmageloader类

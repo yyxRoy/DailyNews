@@ -122,11 +122,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        list.add("news");list.add("paper");list.add("event");
+        list.add("news");list.add("paper");
         /* viewPager.setOffscreenPageLimit(1);*/
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //得到当前页的标题，也就是设置当前页面显示的标题是tabLayout对应标题
-
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
@@ -137,16 +136,10 @@ public class MainActivity extends AppCompatActivity {
                 MyNewsFragment myNewsFragment = new MyNewsFragment();
                 //判断所选的标题，进行传值显示
                 Bundle bundle = new Bundle();
-                if (list.get(position).equals("新闻")){
-                    bundle.putString("name","top");
-                }else if (list.get(position).equals("数据")){
-                    bundle.putString("name","shehui");
-                }else if (list.get(position).equals("图谱")){
-                    bundle.putString("name","guonei");
-                }else if (list.get(position).equals("聚类")){
-                    bundle.putString("name","guoji");
-                }else if (list.get(position).equals("学者")){
-                    bundle.putString("name","yule");
+                if (list.get(position).equals("news")){
+                    bundle.putString("name","news");
+                }else if (list.get(position).equals("paper")){
+                    bundle.putString("name","paper");
                 }
                 myNewsFragment.setArguments(bundle);
                 return myNewsFragment;

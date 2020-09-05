@@ -12,6 +12,8 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -19,53 +21,44 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.dailynews.json.NewsDetail;
+import com.google.gson.Gson;
+
 public class WebActivity extends AppCompatActivity {
-    private WebView webView;
+
     private Toolbar toolbar,ltoolBar;
+    private TextView newsBodyTitle,newsBodyTimeSource,newsBodyDetails;
+    private ProgressBar newsBodyDetailLoading;
+    private NewsDetail newsDetail;
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
         //获取传递的路径
-        webView = (WebView) findViewById(R.id.webView);
         toolbar = (Toolbar) findViewById(R.id.toolbar_webview);
         ltoolBar = (Toolbar) findViewById(R.id.toolbar_webcomment);
+        newsBodyTitle = (TextView) findViewById(R.id.news_body_title);
+        newsBodyTimeSource = (TextView) findViewById(R.id.news_body_ptime_source);
+        newsBodyDetails= (TextView) findViewById(R.id.news_body_details);
+        newsBodyDetailLoading=(ProgressBar)findViewById(R.id.news_body_detail_loding);
+        Intent intent=getIntent();
+        String json=intent.getStringExtra("json");
+        newsDetail = new Gson().fromJson(json,NewsDetail.class);
         findViewById(R.id.toolbar_webcomment).bringToFront();
     }
     @Override
     protected void onStart() {
         super.onStart();
-        url = getIntent().getStringExtra("url");
         //显示JavaScript页面
-        WebSettings settings = webView.getSettings();
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view,url );
-                //通过查看每个新闻的网页发现网页广告的div样式的选择器为body > div.top-wrap.gg-item.J-gg-item 然后去除这个样式，使其加载网页去掉广告
-                view.loadUrl("javascript:function setTop(){document.querySelector('body > div.top-wrap.gg-item.J-gg-item').style.display=\"none\";}setTop();");
-
-            }
-
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
-                //handler.cancel(); 默认的处理方式，WebView变成空白页
-                handler.proceed();
-
-                //handleMessage(Message msg); 其他处理
-            }
-
-        });
-        settings.setJavaScriptEnabled(true);
-        settings.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
-        settings.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setUseWideViewPort(true);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        settings.setLoadWithOverviewMode(true);
-        /*settings.setDisplayZoomControls(false);*/
-        webView.loadUrl(url);
-
+        NewsDetail.DataBean data = newsDetail.getData();
+        newsBodyTitle.setText(data.getTitle());
+        //System.out.println(data.getTitle());
+        newsBodyTimeSource.setText(data.getSource()+" "+data.getTime());
+        //System.out.println(data.getSource());
+        //System.out.println(data.getTime());
+        newsBodyDetails.setText(data.getContent());
+        //System.out.println(data.getContent());
         setSupportActionBar(ltoolBar);
         toolbar.setTitle("DailyNews");
         setSupportActionBar(toolbar);

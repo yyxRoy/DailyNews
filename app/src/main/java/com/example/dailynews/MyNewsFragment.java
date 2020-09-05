@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.dailynews.json.MyNewsBean;
 import com.example.dailynews.json.NewsBean;
+import com.example.dailynews.json.NewsDetail;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
@@ -120,9 +121,13 @@ public class MyNewsFragment extends Fragment {
                             connection.setConnectTimeout(5000);
                             InputStream inputStream = connection.getInputStream();
                             String json = streamToString(inputStream,"utf-8");
-                            System.out.println("hhhhhhh2json:"+json.length()+" "+json);
-                            newsUrl=json.substring(json.indexOf("urls")+8,json.indexOf("status")-5);
+                            //System.out.println("hhhhhhh2json:"+json.length()+" "+json);
 
+                            //String uniquekey = list.get(position).getUniquekey();
+                            //final NewsBean.ResultBean.DataBean dataBean = (NewsBean.ResultBean.DataBean) list.get(position);
+                            Intent intent = new Intent(getActivity(),WebActivity.class);
+                            intent.putExtra("json",json);
+                            startActivity(intent);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         } catch (ProtocolException e) {
@@ -130,11 +135,7 @@ public class MyNewsFragment extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        //String uniquekey = list.get(position).getUniquekey();
-                        //final NewsBean.ResultBean.DataBean dataBean = (NewsBean.ResultBean.DataBean) list.get(position);
-                        Intent intent = new Intent(getActivity(),WebActivity.class);
-                        intent.putExtra("url",newsUrl);
-                        startActivity(intent);
+
                     }
                 }).start();
             }

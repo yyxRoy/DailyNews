@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         });
         list.add("新闻");list.add("数据");list.add("图谱");list.add("聚类");
         list.add("学者");
+        System.out.println("test");
         /* viewPager.setOffscreenPageLimit(1);*/
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //得到当前页的标题，也就是设置当前页面显示的标题是tabLayout对应标题

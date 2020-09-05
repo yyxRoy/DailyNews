@@ -1,17 +1,11 @@
 package com.example.dailynews;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.dailynews.json.NewsDetail;
 import com.google.gson.Gson;
 
 public class WebActivity extends AppCompatActivity {
@@ -29,7 +22,7 @@ public class WebActivity extends AppCompatActivity {
     private Toolbar toolbar,ltoolBar;
     private TextView newsBodyTitle,newsBodyTimeSource,newsBodyDetails;
     private ProgressBar newsBodyDetailLoading;
-    private NewsDetail newsDetail;
+    private String title,source,time,content;
     String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +36,11 @@ public class WebActivity extends AppCompatActivity {
         newsBodyDetails= (TextView) findViewById(R.id.news_body_details);
         newsBodyDetailLoading=(ProgressBar)findViewById(R.id.news_body_detail_loding);
         Intent intent=getIntent();
-        String json=intent.getStringExtra("json");
-        newsDetail = new Gson().fromJson(json,NewsDetail.class);
+        title=intent.getStringExtra("title");
+        source=intent.getStringExtra("source");
+        time=intent.getStringExtra("time");
+        content=intent.getStringExtra("content");
+
         findViewById(R.id.toolbar_webcomment).bringToFront();
     }
     @Override
@@ -55,14 +51,9 @@ public class WebActivity extends AppCompatActivity {
 
 
 
-
-        NewsDetail.DataBean data = newsDetail.getData();
-        newsBodyTitle.setText(data.getTitle());
-        //System.out.println(data.getTitle());
-        newsBodyTimeSource.setText(data.getSource()+" "+data.getTime());
-        //System.out.println(data.getSource());
-        //System.out.println(data.getTime());
-        newsBodyDetails.setText(data.getContent());
+        newsBodyTitle.setText(title);
+        newsBodyTimeSource.setText(source+" "+time);
+        newsBodyDetails.setText(content);
         //System.out.println(data.getContent());
         setSupportActionBar(ltoolBar);
         toolbar.setTitle("DailyNews");

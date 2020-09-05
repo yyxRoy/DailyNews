@@ -105,37 +105,17 @@ public class MyNewsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //获取点击条目的路径，传值显示webview页面
-                String _id = list.get(position).get_id();
-                final String path="https://covid-dashboard.aminer.cn/api/event/"+_id;
-                new Thread(new Runnable(){
-                    @Override
-                    public void run() {
-                        String newsUrl=null;
-                        try {
-                            URL url = new URL(path);
-                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                            connection.setRequestMethod("GET");
-                            connection.setReadTimeout(5000);
-                            connection.setConnectTimeout(5000);
-                            InputStream inputStream = connection.getInputStream();
-                            String json = streamToString(inputStream,"utf-8");
-                            //System.out.println("hhhhhhh2json:"+json.length()+" "+json);
+                String title = list.get(position).getTitle();
+                String source = list.get(position).getSource();
+                String time =list.get(position).getTime();
+                String content = list.get(position).getContent();
+                Intent intent = new Intent(getActivity(),WebActivity.class);
+                intent.putExtra("title",title);
+                intent.putExtra("source",source);
+                intent.putExtra("time",time);
+                intent.putExtra("content",content);
+                startActivity(intent);
 
-                            //String uniquekey = list.get(position).getUniquekey();
-                            //final NewsBean.ResultBean.DataBean dataBean = (NewsBean.ResultBean.DataBean) list.get(position);
-                            Intent intent = new Intent(getActivity(),WebActivity.class);
-                            intent.putExtra("json",json);
-                            startActivity(intent);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (ProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }).start();
             }
         });
     }

@@ -34,7 +34,6 @@ public class WebActivity extends AppCompatActivity {
         newsBodyTitle = (TextView) findViewById(R.id.news_body_title);
         newsBodyTimeSource = (TextView) findViewById(R.id.news_body_ptime_source);
         newsBodyDetails= (TextView) findViewById(R.id.news_body_details);
-        newsBodyDetailLoading=(ProgressBar)findViewById(R.id.news_body_detail_loding);
         Intent intent=getIntent();
         title=intent.getStringExtra("title");
         source=intent.getStringExtra("source");
@@ -47,10 +46,6 @@ public class WebActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //显示JavaScript页面
-
-
-
-
         newsBodyTitle.setText(title);
         newsBodyTimeSource.setText(source+" "+time);
         newsBodyDetails.setText(content);
@@ -111,6 +106,7 @@ public class WebActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent returnIntent = new Intent();
+                Toast.makeText(this,"返回",Toast.LENGTH_SHORT).show();
                 WebActivity.this.finish();
                 break;
             case R.id.news_setting:

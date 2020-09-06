@@ -13,12 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.dailynews.json.MyNewsBean;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -59,7 +57,7 @@ public class MyNewsFragment extends Fragment {
                         list.addAll(((MyNewsBean) msg.obj).getData());
                     }
                     Parcelable onSave=listView.onSaveInstanceState();
-                    MyNewsTabAdapter adapter = new MyNewsTabAdapter(getActivity(),list);
+                    NewsListAdapter adapter = new NewsListAdapter(getActivity(),list);
                     listView.setAdapter((ListAdapter) adapter);
                     listView.onRestoreInstanceState(onSave);
                     adapter.notifyDataSetChanged();

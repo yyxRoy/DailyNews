@@ -19,15 +19,29 @@
             android:background="@color/colorPrimary"
             app:titleTextColor="@color/colorWhite"
             />
-        <!--其中的 app:titleTextColor="@color/colorRed"是我自己在color中设置了颜色属性值为#F00-->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="#FF0000"
-            app:tabTextColor="#000000">
-        </com.google.android.material.tabs.TabLayout>
+            android:layout_height="wrap_content">
+            <!--其中的 app:titleTextColor="@color/colorRed"是我自己在color中设置了颜色属性值为#F00-->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_toLeftOf="@id/iv_add"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="#FF0000"
+                app:tabTextColor="#000000">
+            </com.google.android.material.tabs.TabLayout>
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/plus"></ImageView>
+
+        </RelativeLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"

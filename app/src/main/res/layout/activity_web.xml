@@ -6,98 +6,80 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".WebActivity">
+
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_webview"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="@color/colorhuise"
-            app:titleTextColor="@color/black"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/black" />
+
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <WebView
-                android:id="@+id/webView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-            </WebView>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
             <ScrollView
                 android:id="@+id/news_body_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFE7E7E7"
-                android:fadingEdge="none"
-                >
+                android:fadingEdge="none">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
-                    <LinearLayout
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/news_body_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
-                        <TextView
-                            android:id="@+id/news_body_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="12.0dip"
-                            android:layout_marginTop="12.0dip"
-                            android:textColor="#FF272727"
-                            android:textSize="18.0sp"
-                            android:textStyle="bold"
-                            />
-                        <TextView
-                            android:id="@+id/news_body_ptime_source"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="12.0dip"
-                            android:layout_marginRight="12.0dip"
-                            android:layout_marginTop="9.0dip"
-                            android:textColor="#FF888888"
-                            android:textSize="12.0sp"
-                            />
-                        <ProgressBar
-                            android:id="@+id/news_body_detail_loding"
-                            style="?android:attr/progressBarStyleLarge"
-                            android:layout_width="16.0dip"
-                            android:layout_height="16.0dip"
-                            android:layout_marginLeft="152.0dip"
-                            android:layout_marginTop="10.0dip"
-                            android:clickable="false"
-                            android:visibility="gone"
-                            />
+                        android:layout_marginLeft="12.0dip"
+                        android:layout_marginTop="12.0dip"
+                        android:textColor="#FF272727"
+                        android:textSize="18.0sp"
+                        android:textStyle="bold" />
 
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/news_body_ptime_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12.0dip"
+                        android:layout_marginTop="9.0dip"
+                        android:layout_marginRight="12.0dip"
+                        android:textColor="#FF888888"
+                        android:textSize="12.0sp" />
                     <TextView
                         android:id="@+id/news_body_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5.0dip"
+                        android:layout_marginLeft="12.0dip"
+                        android:layout_marginRight="12.0dip"
                         android:textColor="#ff000000" />
-
                 </LinearLayout>
-
             </ScrollView>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_webcomment"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                android:background="#ffffff"
-                app:titleTextColor="@color/black"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:elevation="8dp"/>
         </LinearLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_webcomment"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            android:background="#ffffff"
+
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="8dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@color/black" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

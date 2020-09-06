@@ -10,10 +10,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -23,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -38,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private TabLayout tabLayout;
+    private MyNewsAdapter myNewsAdapter;
     private ViewPager viewPager;
-    private List<String> list;
     private BottomMenuView bottomMenuViewList;
+    private ImageView iv_add;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         CircleImageView circleImageView=v.findViewById(R.id.icon_image);
         tabLayout=findViewById(R.id.tabLayout);
         viewPager=findViewById(R.id.viewPager);
-        list=new ArrayList<>();
+        iv_add=findViewById(R.id.iv_add);
         bottomMenuViewList=(BottomMenuView)findViewById(R.id.bmv_list);
         //设置bottom数据
         bottomMenuViewList.setBottomItem(getData());
@@ -90,6 +94,23 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
         }
+        TagBean bean1 = new TagBean("news", 0);
+        TagBean bean2 = new TagBean("paper", 1);
+        TagBean bean3 = new TagBean("all", 2);
+        TagBean bean4 = new TagBean("points", 3);
+        TagBean bean5 = new TagBean("event", 4);
+        TagManager.myCategoryList.add(bean1);
+        TagManager.myCategoryList.add(bean2);
+        TagManager.myCategoryList.add(bean3);
+        TagManager.myCategoryList.add(bean4);
+        TagManager.myCategoryList.add(bean5);
+        iv_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,ChannelActivity.class);
+                startActivityForResult(intent,0);
+            }
+        });
         navigationView.setCheckedItem(R.id.nav_call);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -122,50 +143,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        list.add("news");list.add("paper");list.add("all");list.add("points");list.add("event");
-        /* viewPager.setOffscreenPageLimit(1);*/
-        viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            //得到当前页的标题，也就是设置当前页面显示的标题是tabLayout对应标题
-            @Nullable
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return list.get(position);
-            }
-            @Override
-            public Fragment getItem(int position) {
-                MyNewsFragment myNewsFragment = new MyNewsFragment();
-                //判断所选的标题，进行传值显示
-                Bundle bundle = new Bundle();
-                if (list.get(position).equals("news")){
-                    bundle.putString("name","news");
-                }else if (list.get(position).equals("paper")){
-                    bundle.putString("name","paper");
-                }else if (list.get(position).equals("all")){
-                    bundle.putString("name","all");
-                }else if (list.get(position).equals("points")){
-                    bundle.putString("name","points");
-                }else if (list.get(position).equals("event")){
-                    bundle.putString("name","event");
-                }
-                myNewsFragment.setArguments(bundle);
-                return myNewsFragment;
-            }
+        for (int i=0;i<TagManager.myCategoryList.size();i++){
 
-            @NonNull
-            @Override
-            public Object instantiateItem(@NonNull ViewGroup container, int position) {
-                MyNewsFragment myNewsFragment = (MyNewsFragment)  super.instantiateItem(container, position);
-                return myNewsFragment;
-            }
-            @Override
-            public int getItemPosition(@NonNull Object object) {
-                return FragmentStatePagerAdapter.POSITION_NONE;
-            }
-            @Override
-            public int getCount() {
-                return list.size();
-            }
-        });
+        }
+        /* viewPager.setOffscreenPageLimit(1);*/
+        myNewsAdapter=new MyNewsAdapter(getSupportFragmentManager(),TagManager.myCategoryList);
+        viewPager.setAdapter(myNewsAdapter);
         //TabLayout要与ViewPAger关联显示
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -209,5 +192,26 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0: //返回的结果是来自于Activity B
+                if (resultCode == Activity.RESULT_OK) {
+                    //tt.setText(data.getStringExtra("respond"));
+                    System.out.println("hhhhhhhhhhfuck");
+                    myNewsAdapter.setNewFragments();
+
+                    myNewsAdapter.notifyDataSetChanged();
+                    //TabLayout要与ViewPAger关联显示
+                    //tabLayout.setupWithViewPager(viewPager);
+                } else {
+                    //tt.setText("What?Nobody?");
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

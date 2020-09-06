@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        list.add("news");list.add("paper");
+        list.add("news");list.add("paper");list.add("all");list.add("points");list.add("event");
         /* viewPager.setOffscreenPageLimit(1);*/
         viewPager.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             //得到当前页的标题，也就是设置当前页面显示的标题是tabLayout对应标题
@@ -140,6 +140,12 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("name","news");
                 }else if (list.get(position).equals("paper")){
                     bundle.putString("name","paper");
+                }else if (list.get(position).equals("all")){
+                    bundle.putString("name","all");
+                }else if (list.get(position).equals("points")){
+                    bundle.putString("name","points");
+                }else if (list.get(position).equals("event")){
+                    bundle.putString("name","event");
                 }
                 myNewsFragment.setArguments(bundle);
                 return myNewsFragment;

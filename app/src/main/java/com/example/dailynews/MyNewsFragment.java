@@ -6,12 +6,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +23,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.dailynews.json.MyNewsBean;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,9 +41,10 @@ import java.util.List;
 public class MyNewsFragment extends Fragment {
     private FloatingActionButton fab;
     private ListView listView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
+    private SmartRefreshLayout smartRefreshLayout;
     private List<MyNewsBean.DataBean> list;
-
+    private int curPage=1;
     private static final int UPNEWS_INSERT = 0;
     @SuppressLint("HandlerLeak")
     private Handler newsHandler = new Handler(){
@@ -46,9 +53,15 @@ public class MyNewsFragment extends Fragment {
             String uniquekey,title,date, category,author_name,url,thumbnail_pic_s,thumbnail_pic_s02,thumbnail_pic_s03;
             switch (msg.what){
                 case UPNEWS_INSERT:
-                    list = ((MyNewsBean) msg.obj).getData();
+                    if(list==null){
+                        list=((MyNewsBean) msg.obj).getData();
+                    }else{
+                        list.addAll(((MyNewsBean) msg.obj).getData());
+                    }
+                    Parcelable onSave=listView.onSaveInstanceState();
                     MyNewsTabAdapter adapter = new MyNewsTabAdapter(getActivity(),list);
                     listView.setAdapter((ListAdapter) adapter);
+                    listView.onRestoreInstanceState(onSave);
                     adapter.notifyDataSetChanged();
                     break;
             }
@@ -57,7 +70,6 @@ public class MyNewsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
@@ -66,7 +78,7 @@ public class MyNewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.list_item,container,false);
         listView = (ListView) view.findViewById(R.id.listView);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        smartRefreshLayout = (SmartRefreshLayout) view.findViewById(R.id.smartRefreshLayout);
         return view;
     }
 
@@ -86,21 +98,34 @@ public class MyNewsFragment extends Fragment {
             }
         });
         //下拉刷新
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorRed);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
                         // 下一步实现从数据库中读取数据刷新到listview适配器中
+                        getDataFromNet(data,curPage);
+                        smartRefreshLayout.finishRefresh();
                     }
                 },1000);
             }
         });
+        //下滑加载更多
+        smartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                getDataFromNet(data,++curPage);
+                //加载完之后结束加载
+                smartRefreshLayout.finishLoadMore();
+                //当数据全部加载完成之后不可以再继续加载数据
+                if (curPage>100){
+                    smartRefreshLayout.finishLoadMoreWithNoMoreData();
+                }
+            }
+        });
         //异步加载数据
-        getDataFromNet(data);
+        getDataFromNet(data,curPage);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -119,11 +144,11 @@ public class MyNewsFragment extends Fragment {
             }
         });
     }
-    private void getDataFromNet(final String data){
+    private void getDataFromNet(final String data,int page){
         @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,String> task = new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
-                String path= "https://covid-dashboard.aminer.cn/api/events/list?type="+data+"&page=1&size=20";
+                String path= "https://covid-dashboard.aminer.cn/api/events/list?type="+data+"&page="+page+"&size=7";
                 URL url = null;
                 try {
                     url = new URL(path);

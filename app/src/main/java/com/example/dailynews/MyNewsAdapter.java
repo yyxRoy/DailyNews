@@ -51,8 +51,6 @@ public class MyNewsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        //notifyDataSetChanged();
-        System.out.println("szzzz: "+list.size());
         return list.size();
     }
     @Override

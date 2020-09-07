@@ -70,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
         });
         //默认选择第几个
         bottomMenuViewList.setShowIndex(0);
+        TagBean bean1 = new TagBean("news", 0);
+        TagBean bean2 = new TagBean("paper", 1);
+        TagBean bean3 = new TagBean("all", 2);
+        TagBean bean4 = new TagBean("points", 3);
+        TagBean bean5 = new TagBean("event", 4);
+        TagManager.myCategoryList.add(bean1);
+        TagManager.myCategoryList.add(bean2);
+        TagManager.myCategoryList.add(bean3);
+        TagManager.myCategoryList.add(bean4);
+        TagManager.myCategoryList.add(bean5);
     }
     /**
      * 创建bottom数据
@@ -94,16 +104,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
         }
-        TagBean bean1 = new TagBean("news", 0);
-        TagBean bean2 = new TagBean("paper", 1);
-        TagBean bean3 = new TagBean("all", 2);
-        TagBean bean4 = new TagBean("points", 3);
-        TagBean bean5 = new TagBean("event", 4);
-        TagManager.myCategoryList.add(bean1);
-        TagManager.myCategoryList.add(bean2);
-        TagManager.myCategoryList.add(bean3);
-        TagManager.myCategoryList.add(bean4);
-        TagManager.myCategoryList.add(bean5);
         iv_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,9 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        for (int i=0;i<TagManager.myCategoryList.size();i++){
-
-        }
         /* viewPager.setOffscreenPageLimit(1);*/
         myNewsAdapter=new MyNewsAdapter(getSupportFragmentManager(),TagManager.myCategoryList);
         viewPager.setAdapter(myNewsAdapter);

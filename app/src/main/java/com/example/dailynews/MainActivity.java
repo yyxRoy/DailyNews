@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private BottomMenuView bottomMenuViewList;
     private ImageView iv_add;
+    public static NewsRepository newsRepository;
+    public static NewsDB newsDB;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         TagManager.myCategoryList.add(bean3);
         TagManager.myCategoryList.add(bean4);
         TagManager.myCategoryList.add(bean5);
+        newsDB=NewsDB.getAppDB(this,"localnews");
+        newsRepository=new NewsRepository(newsDB);
     }
     /**
      * 创建bottom数据

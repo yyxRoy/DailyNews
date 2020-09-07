@@ -180,6 +180,15 @@ public class MyNewsFragment extends Fragment {
                     @Override
                     public void run() {
                         MyNewsBean myNewsBean = new Gson().fromJson(result,MyNewsBean.class);
+                        //MyNewsBean.DataBean dataBeanList[]=myNewsBean.getData().toArray(new MyNewsBean.DataBean[0]);
+                        //System.out.println("here"+dataBeanList.length);
+                        //System.out.println(myNewsBean.getData().get(0).get_id());
+                        //MainActivity.newsRepository.insertDataBean(myNewsBean.getData().toArray(new MyNewsBean.DataBean[0]));
+                        List<MyNewsBean.DataBean> dataBeanList=MainActivity.newsRepository.getAllDataBean();
+                        System.out.println(dataBeanList.size());
+                        for(int i=0;i<dataBeanList.size();i++){
+                            System.out.println(dataBeanList.get(i).getContent());
+                        }
                         //System.out.println(myNewsBean.getError_code());
                         //if ("10012".equals(""+myNewsBean.getError_code())){
                             //下一篇将要实现从数据库加载数据

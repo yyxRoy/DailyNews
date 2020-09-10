@@ -166,9 +166,8 @@ public class SearchResultActivity extends AppCompatActivity {
                     url = new URL(path);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    connection.setReadTimeout(5000);
-                    connection.setConnectTimeout(5000);
-
+                    connection.setReadTimeout(10000);
+                    connection.setConnectTimeout(10000);
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 200){
                         InputStream inputStream = connection.getInputStream();

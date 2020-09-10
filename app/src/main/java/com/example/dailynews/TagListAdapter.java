@@ -1,27 +1,19 @@
 package com.example.dailynews;
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dailynews.json.TagBean;
+
 import java.util.Collections;
 import java.util.List;
-class TagBean{
-    public TagBean(String type, int order) {
-        this.type = type;
-        this.order = order;
-    }
 
-    String type;
-    int order;
-}
 interface TouchInterface {
 
     void onMove(int currentPosition, int targetPosition);

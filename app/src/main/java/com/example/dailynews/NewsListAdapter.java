@@ -1,11 +1,13 @@
 package com.example.dailynews;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.dailynews.Activity.MainActivity;
 import com.example.dailynews.json.MyNewsBean;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class NewsListAdapter extends BaseAdapter {
     public NewsListAdapter(Context context, List<MyNewsBean.DataBean> list){
         this.context = context;
         this.list = list;
+        System.out.println("lsitsizzzee+"+list.size());
     }
 
     @Override
@@ -41,22 +44,38 @@ public class NewsListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null){
-                convertView =View.inflate(context, R.layout.news_list_item,null);
-                holder =new ViewHolder();
-                //查找控件
-                holder.source = (TextView) convertView.findViewById(R.id.source);
-                holder.title = (TextView) convertView.findViewById(R.id.title);
-                holder.time = (TextView) convertView.findViewById(R.id.time);
-                convertView.setTag(holder);
-            }else {
-                holder = (ViewHolder) convertView.getTag();
+        ViewHolder holder;
+        if (convertView == null){
+            convertView =View.inflate(context, R.layout.news_list_item,null);
+            holder =new ViewHolder();
+            //查找控件
+            holder.source = (TextView) convertView.findViewById(R.id.source);
+            holder.title = (TextView) convertView.findViewById(R.id.title);
+            holder.time = (TextView) convertView.findViewById(R.id.time);
+            convertView.setTag(holder);
+        }else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        //获取数据重新赋值
+        MyNewsBean.DataBean dataBean=list.get(position);
+        holder.title.setText(dataBean.getTitle());
+        holder.source.setText(dataBean.getSource());
+        holder.time.setText(dataBean.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(MainActivity.newsRepository.getNewsByNewsID(dataBean.get_id())!=null){
+                    holder.title.setTextColor(Color.GRAY);
+                    holder.source.setTextColor(Color.GRAY);
+                    holder.time.setTextColor(Color.GRAY);
+                }else{
+                    holder.title.setTextColor(Color.BLACK);
+                    holder.source.setTextColor(Color.BLACK);
+                    holder.time.setTextColor(Color.BLACK);
+                }
             }
-            //获取数据重新赋值
-            holder.title.setText(list.get(position).getTitle());
-            holder.source.setText(list.get(position).getSource());
-            holder.time.setText(list.get(position).getTime());
+        }).start();
+
         return convertView;
     }
 

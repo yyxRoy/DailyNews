@@ -1,8 +1,13 @@
 package com.example.dailynews;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,11 +18,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.example.dailynews.Activity.MainActivity;
+import com.example.dailynews.Activity.WebActivity;
 import com.example.dailynews.json.MyNewsBean;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -42,6 +51,7 @@ public class MyNewsFragment extends Fragment {
     //private SwipeRefreshLayout swipeRefreshLayout;
     private SmartRefreshLayout smartRefreshLayout;
     private List<MyNewsBean.DataBean> list;
+    private NewsListAdapter adapter;
     private int curPage=1;
     private static final int UPNEWS_INSERT = 0;
     @SuppressLint("HandlerLeak")
@@ -52,12 +62,12 @@ public class MyNewsFragment extends Fragment {
             switch (msg.what){
                 case UPNEWS_INSERT:
                     if(list==null){
-                        list=((MyNewsBean) msg.obj).getData();
+                        list=((List<MyNewsBean.DataBean>) msg.obj);
                     }else{
-                        list.addAll(((MyNewsBean) msg.obj).getData());
+                        list.addAll((List<MyNewsBean.DataBean>) msg.obj);
                     }
                     Parcelable onSave=listView.onSaveInstanceState();
-                    NewsListAdapter adapter = new NewsListAdapter(getActivity(),list);
+                    adapter= new NewsListAdapter(getActivity(),list);
                     listView.setAdapter((ListAdapter) adapter);
                     listView.onRestoreInstanceState(onSave);
                     adapter.notifyDataSetChanged();
@@ -128,11 +138,37 @@ public class MyNewsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //获取点击条目的路径，传值显示webview页面
+                if(isNetworkAvailable(getActivity()))//有网
+                {
+                    System.out.println("有网");
+                    //加入数据库
+                    new Thread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void run() {
+                            MyNewsBean.DataBean dataBean=list.get(position);
+                            if(MainActivity.newsRepository.getNewsByNewsID(dataBean.get_id())==null){
+                                MainActivity.newsRepository.insertDataBean(dataBean);
+                            }
+                        }
+                    }).start();
+                    TextView tv_title = (TextView) view.findViewById(R.id.title);
+                    TextView tv_source= (TextView)view.findViewById(R.id.source);
+                    TextView tv_time= (TextView)view.findViewById(R.id.time);
+                    tv_title.setTextColor(Color.GRAY);
+                    tv_source.setTextColor(Color.GRAY);
+                    tv_time.setTextColor(Color.GRAY);
+                }
+                else{
+                    //否则应该一直转圈圈
+                    System.out.println("没网");
+                }
+
                 String title = list.get(position).getTitle();
                 String source = list.get(position).getSource();
                 String time =list.get(position).getTime();
                 String content = list.get(position).getContent();
-                Intent intent = new Intent(getActivity(),WebActivity.class);
+                Intent intent = new Intent(getActivity(), WebActivity.class);
                 intent.putExtra("title",title);
                 intent.putExtra("source",source);
                 intent.putExtra("time",time);
@@ -152,8 +188,8 @@ public class MyNewsFragment extends Fragment {
                     url = new URL(path);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
-                    connection.setReadTimeout(5000);
-                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(1000);
+                    connection.setConnectTimeout(1000);
 
                     int responseCode = connection.getResponseCode();
                     if (responseCode == 200){
@@ -166,10 +202,6 @@ public class MyNewsFragment extends Fragment {
                         return "已达到今日访问次数上限";
                     }
 
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -177,25 +209,35 @@ public class MyNewsFragment extends Fragment {
             }
             protected void onPostExecute(final String result){
                 new Thread(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void run() {
-                        MyNewsBean myNewsBean = new Gson().fromJson(result,MyNewsBean.class);
-                        //MyNewsBean.DataBean dataBeanList[]=myNewsBean.getData().toArray(new MyNewsBean.DataBean[0]);
-                        //System.out.println("here"+dataBeanList.length);
-                        //System.out.println(myNewsBean.getData().get(0).get_id());
-                        //MainActivity.newsRepository.insertDataBean(myNewsBean.getData().toArray(new MyNewsBean.DataBean[0]));
-                        List<MyNewsBean.DataBean> dataBeanList=MainActivity.newsRepository.getAllDataBean();
-                        System.out.println(dataBeanList.size());
-                        for(int i=0;i<dataBeanList.size();i++){
-                            System.out.println(dataBeanList.get(i).getContent());
+                        System.out.println("result:"+result);
+
+                        List<MyNewsBean.DataBean> dataBeanList;
+                        if(result==""){
+                            dataBeanList= MainActivity.newsRepository.getAllDataBean();
+                            System.out.println("database size"+dataBeanList.size());
+                            //myNewsBean.setData(dataBeanList);
+                        }else{
+                            MyNewsBean myNewsBean = new Gson().fromJson(result,MyNewsBean.class);
+                            dataBeanList=myNewsBean.getData();
                         }
-                        //System.out.println(myNewsBean.getError_code());
-                        //if ("10012".equals(""+myNewsBean.getError_code())){
-                            //下一篇将要实现从数据库加载数据
-                        //}
+
+                        /*myNewsBean.getData().forEach(dataBean -> {
+                            System.out.println(dataBean.get_id());
+                            if(MainActivity.newsRepository.getNewsByNewsID(dataBean.get_id())==null){
+                                MainActivity.newsRepository.insertDataBean(dataBean);
+                            }
+                        });*/
+                        //搜索
+                        List<MyNewsBean.DataBean> searchAns=MainActivity.newsRepository.searchByKeyWord("猪肉");
+                        searchAns.forEach(ans->{
+                            System.out.println(ans.getTitle());
+                        });
                         Message msg=newsHandler.obtainMessage();
                         msg.what=UPNEWS_INSERT;
-                        msg.obj = myNewsBean;
+                        msg.obj = dataBeanList;
                         newsHandler.sendMessage(msg);
                     }
                 }).start();
@@ -225,5 +267,22 @@ public class MyNewsFragment extends Fragment {
         return null;
 
     }
-
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED
+                            || info[i].getState() == NetworkInfo.State.CONNECTING) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

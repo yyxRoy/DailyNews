@@ -64,5 +64,5 @@ dependencies {
 
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
-
+    implementation 'com.carson_ho:SearchLayout:1.0.1'
 }

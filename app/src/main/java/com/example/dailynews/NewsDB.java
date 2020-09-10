@@ -19,23 +19,25 @@ import java.util.List;
 @Dao    //Database access object
 interface NewsDao {
     @Insert
-    void  insertDataBean(MyNewsBean.DataBean... dataBean);
+    void  insertDataBean(MyNewsBean.DataBean dataBean);
     @Update
-    int updateDataBean(MyNewsBean.DataBean... dataBean);
+    int updateDataBean(MyNewsBean.DataBean dataBean);
     @Delete
-    void deleteDataBean(MyNewsBean.DataBean...dataBean);
+    void deleteDataBean(MyNewsBean.DataBean dataBean);
 
     @Query("SELECT * FROM dataBean")
     List<MyNewsBean.DataBean> getAllDataBean();
 
     @Query("SELECT * FROM dataBean WHERE _id = :id")
-    MyNewsBean.DataBean getDataBeanBy_id(String... id);
+    MyNewsBean.DataBean getDataBeanBy_id(String id);
 
     @Query("DELETE FROM dataBean")
     void clear();
     @Query("DELETE FROM dataBean WHERE _id in (:id1)")
-    void deleteNewsBy_id(String... id1);
+    void deleteNewsBy_id(String id1);
 
+    @Query("SELECT * FROM dataBean WHERE title LIKE '%' || :keyWord || '%' ")
+    List<MyNewsBean.DataBean> searchByKeyWord(String keyWord);
 }
 @Database(entities = {MyNewsBean.DataBean.class},version = 2)
 public abstract class NewsDB extends RoomDatabase {

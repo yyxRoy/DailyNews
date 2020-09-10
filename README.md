@@ -1,4 +1,4 @@
-# DailyNews
+# 知疫
  
  疫情新闻app
  
